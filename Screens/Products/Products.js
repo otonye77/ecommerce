@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../Services/Services";
 import { FlatList, Text, View } from "react-native";
 import ProductItems from "../../Components/ProductItems/ProductItem";
+import { Searchbar } from 'react-native-paper';
 
 const ProductsScreen = () => {
   const [data, setData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const dispatch = useDispatch();
   const product = useSelector((state) => state.product);
 
@@ -23,8 +25,17 @@ const ProductsScreen = () => {
     }
   }, [product]);
 
+  const filterData = () => {
+    return data.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()));
+  }
+ filterData();
   return (
     <View style={{ flex: 1, marginHorizontal: 10, marginVertical: 20 }}>
+       <Searchbar
+      placeholder="Search"
+      onChangeText={(query) => setSearchQuery(query)}
+      value={searchQuery}
+    />
       {product.loading ? (
         <Text>Loading...</Text>
       ) : product.error ? (
@@ -32,7 +43,7 @@ const ProductsScreen = () => {
       ) : (
         <View style={{ flex: 1, paddingTop: 10 }}>
           <FlatList
-            data={data}
+            data={filterData()}
             keyExtractor={(item) => item.id}
             renderItem={({ item }) => <ProductItems {...item} />}
           />

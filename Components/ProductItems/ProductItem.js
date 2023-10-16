@@ -16,6 +16,7 @@ const ProductItems = ({
   const handleCardPress = () => {
     navigation.navigate("ProductDetails", {
       title,
+      image,
       price,
       category,
       rating,
