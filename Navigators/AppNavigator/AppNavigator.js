@@ -9,13 +9,17 @@ const Stack = createNativeStackNavigator();
 const AppNavigator = () => {
     return (
         <NavigationContainer>
-            <Stack.Navigator>
+            <Stack.Navigator
+                screenOptions={{
+                    headerTintColor: "black",
+                }}
+            >
                 <Stack.Screen name="Products" component={ProductsScreen} />
-                <Stack.Screen name="ProductDetails" component={ProductDetails}  />
+                <Stack.Screen name="ProductDetails" component={ProductDetails} />
                 <Stack.Screen name="Cart" component={CartScreen} />
             </Stack.Navigator>
         </NavigationContainer>
-    )
+    );
 }
 
-export default AppNavigator
+export default AppNavigator;
