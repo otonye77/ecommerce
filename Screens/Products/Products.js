@@ -65,7 +65,7 @@ const ProductsScreen = () => {
           }}
           onPress={() => navigation.navigate("Cart")}
         >
-          <Text style={{ color: "black" }}>Go to cart {cart.length}</Text>
+          <Text style={{ color: "black" }}>Go to cart</Text>
         </TouchableOpacity>
         <Searchbar
           placeholder="Search"

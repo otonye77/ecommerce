@@ -28,7 +28,7 @@ const CartScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.cartTitle}>Your Cart</Text>
+      <Text style={styles.cartTitle}>Your Cart: {cartItems.length}</Text>
       {cartItems.length > 0 ? (
         <FlatList
           data={cartItems}
