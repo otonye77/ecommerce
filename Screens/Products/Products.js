@@ -8,8 +8,8 @@ import { Searchbar, Button, Menu, Divider, Provider } from 'react-native-paper';
 const ProductsScreen = () => {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortType, setSortType] = useState("default"); // Default sorting type
-  const [visible, setVisible] = useState(false); // Menu visibility state
+  const [sortType, setSortType] = useState("default"); 
+  const [visible, setVisible] = useState(false); 
   const dispatch = useDispatch();
   const product = useSelector((state) => state.product);
 
@@ -33,7 +33,6 @@ const ProductsScreen = () => {
     );
   };
 
-  // Function to sort products based on the selected sorting criteria
   const sortProducts = () => {
     let sortedData = [...filterData()];
 
@@ -42,8 +41,6 @@ const ProductsScreen = () => {
     } else if (sortType === "priceHighToLow") {
       sortedData.sort((a, b) => b.price - a.price);
     }
-    // You can add more sorting criteria here
-
     return sortedData;
   };
 
