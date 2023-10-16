@@ -3,11 +3,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../Services/Services";
 import { FlatList, Text, View } from "react-native";
 import ProductItems from "../../Components/ProductItems/ProductItem";
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, Button, Menu, Divider, Provider } from 'react-native-paper';
 
 const ProductsScreen = () => {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [sortType, setSortType] = useState("default"); // Default sorting type
+  const [visible, setVisible] = useState(false); // Menu visibility state
   const dispatch = useDispatch();
   const product = useSelector((state) => state.product);
 
@@ -26,30 +28,92 @@ const ProductsScreen = () => {
   }, [product]);
 
   const filterData = () => {
-    return data.filter((item) => item.title.toLowerCase().includes(searchQuery.toLowerCase()));
-  }
- filterData();
+    return data.filter((item) =>
+      item.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  };
+
+  // Function to sort products based on the selected sorting criteria
+  const sortProducts = () => {
+    let sortedData = [...filterData()];
+
+    if (sortType === "priceLowToHigh") {
+      sortedData.sort((a, b) => a.price - b.price);
+    } else if (sortType === "priceHighToLow") {
+      sortedData.sort((a, b) => b.price - a.price);
+    }
+    // You can add more sorting criteria here
+
+    return sortedData;
+  };
+
   return (
-    <View style={{ flex: 1, marginHorizontal: 10, marginVertical: 20 }}>
-       <Searchbar
-      placeholder="Search"
-      onChangeText={(query) => setSearchQuery(query)}
-      value={searchQuery}
-    />
-      {product.loading ? (
-        <Text>Loading...</Text>
-      ) : product.error ? (
-        <Text>Error: Unable to fetch data</Text>
-      ) : (
-        <View style={{ flex: 1, paddingTop: 10 }}>
-          <FlatList
-            data={filterData()}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <ProductItems {...item} />}
-          />
+    <Provider>
+      <View style={{ flex: 1, marginHorizontal: 10, marginVertical: 20 }}>
+        <Searchbar
+          placeholder="Search"
+          onChangeText={(query) => setSearchQuery(query)}
+          value={searchQuery}
+        />
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <Text>Sort By: </Text>
+          <Menu
+            visible={visible}
+            onDismiss={() => setVisible(false)}
+            anchor={
+              <Button
+                onPress={() => setVisible(true)}
+              >
+                {sortType === "default"
+                  ? "Default"
+                  : sortType === "priceLowToHigh"
+                  ? "Price Low to High"
+                  : sortType === "priceHighToLow"
+                  ? "Price High to Low"
+                  : "Default"}
+              </Button>
+            }
+          >
+            <Menu.Item
+              onPress={() => {
+                setSortType("default");
+                setVisible(false);
+              }}
+              title="Default"
+            />
+            <Divider />
+            <Menu.Item
+              onPress={() => {
+                setSortType("priceLowToHigh");
+                setVisible(false);
+              }}
+              title="Price Low to High"
+            />
+            <Divider />
+            <Menu.Item
+              onPress={() => {
+                setSortType("priceHighToLow");
+                setVisible(false);
+              }}
+              title="Price High to Low"
+            />
+          </Menu>
         </View>
-      )}
-    </View>
+        {product.loading ? (
+          <Text>Loading...</Text>
+        ) : product.error ? (
+          <Text>Error: Unable to fetch data</Text>
+        ) : (
+          <View style={{ flex: 1, paddingTop: 10 }}>
+            <FlatList
+              data={sortProducts()}
+              keyExtractor={(item) => item.id}
+              renderItem={({ item }) => <ProductItems {...item} />}
+            />
+          </View>
+        )}
+      </View>
+    </Provider>
   );
 };
 
