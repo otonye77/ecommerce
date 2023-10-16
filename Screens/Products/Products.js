@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchData } from "../../Services/Services";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, View, TouchableOpacity } from "react-native";
 import ProductItems from "../../Components/ProductItems/ProductItem";
-import { Searchbar, Button, Menu, Divider, Provider } from 'react-native-paper';
+import { Searchbar, Button, Menu, Divider, Provider } from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
 
 const ProductsScreen = () => {
   const [data, setData] = useState([]);
+  const navigation = useNavigation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [sortType, setSortType] = useState("default"); 
-  const [visible, setVisible] = useState(false); 
+  const [sortType, setSortType] = useState("default");
+  const [visible, setVisible] = useState(false);
   const dispatch = useDispatch();
   const product = useSelector((state) => state.product);
+  const cart = useSelector((state) => state.cart);
 
   useEffect(() => {
     getProducts();
@@ -47,20 +50,36 @@ const ProductsScreen = () => {
   return (
     <Provider>
       <View style={{ flex: 1, marginHorizontal: 10, marginVertical: 20 }}>
+        <TouchableOpacity
+          style={{
+            position: "absolute",
+            top: 80,
+            right: 20,
+            backgroundColor: "#EEE7F5",
+            borderRadius: 50,
+            width: 60,
+            height: 60,
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+          }}
+          onPress={() => navigation.navigate("Cart")}
+        >
+          <Text style={{ color: "black" }}>Go to cart {cart.length}</Text>
+        </TouchableOpacity>
         <Searchbar
           placeholder="Search"
           onChangeText={(query) => setSearchQuery(query)}
           value={searchQuery}
         />
+
         <View style={{ flexDirection: "row", alignItems: "center" }}>
           <Text>Sort By: </Text>
           <Menu
             visible={visible}
             onDismiss={() => setVisible(false)}
             anchor={
-              <Button
-                onPress={() => setVisible(true)}
-              >
+              <Button onPress={() => setVisible(true)}>
                 {sortType === "default"
                   ? "Default"
                   : sortType === "priceLowToHigh"
